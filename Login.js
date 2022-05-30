@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 
 export default function Login({navigation}) {
@@ -15,46 +15,57 @@ export default function Login({navigation}) {
   const [password, setPassword] = useState(''); //Stores Password
   // const realname="Kamesh";
   // const realPassword="12345";
- const[realname,setRealName]=useState('');
- const[realPassword,setRealPassword]=useState('')
+  var token="";
+  var status;
  
- const[data,setData]=useState('');
-async function FetchData() {
+ 
+ async function FetchData() {
   //const{name,password}=route.params;
-
-  fetch('https://jsonplaceholder.typicode.com/todos/1', {
-    method: 'GET'
+  
+  await fetch('https://airport-vehicle-management-backend-urtjok3rza-wl.a.run.app/authenticate', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: name,
+      password: password,
+    })
   })
-  .then((response) => response.json())
-  .then((responseJson) => {
-    // console.log(responseJson);
-    setData(responseJson);
-    setRealName(responseJson.userId);
-    setRealPassword(responseJson.id);
+  .then((response) =>{ response.json().then((result)=>{
     
-    //console.log(realname+" "+realPassword);
-  })
+    token=result.token;
+    console.log(token);
+    status=response.status;
+    localStorage.setItem('token',JSON.stringify({token:result.token}))
+  })})
+  
   .catch((error) => {
-    console.error(error);
-  });
+  console.error(error);
+   });
   
  
   //console.log(realname);
 }
-   
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
   function isValid(name,password){
     console.log(name+" "+password);
     //console.log(realname+" "+realPassword);
-    FetchData();
-    if(name==realname&&password==realPassword)
+   FetchData();
+   sleep(2000).then(() => { console.log("Waiting!");
+   if(token!="")
+   {
+    navigation.navigate('Fetch');
+   }
+    if(status!=200)
     {
-      navigation.navigate('Fetch');
-    }
-    else
-    {
-      if(realname!='')
-      alert("Invalid Username or Password");
-    }
+      alert('Invalid Username Or Password');
+    } });
+     
   }
   return (
     <View style={styles.mainContainer}>
@@ -91,6 +102,7 @@ async function FetchData() {
         
       </View>
     </View>
+    
   );
 }
 

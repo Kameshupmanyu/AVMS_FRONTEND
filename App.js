@@ -2,7 +2,7 @@ import React,{useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import axios from 'axios';
-import Fetch from './fetch';
+import Dashboard from './fetch';
 import Login from './Login';
 import {
   View,
@@ -16,7 +16,7 @@ function App (){
       <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Fetch" component={Fetch} />
+        <Stack.Screen name="Fetch" component={Dashboard} />
         
       </Stack.Navigator>
       </NavigationContainer>
